@@ -25,6 +25,10 @@ app.post("/update/:temp", async (req, res) => {
   try {
     const temp = req.params.temp;
 
+    if (temp === null || temp.trim() === "") {
+      throw new Error("Temperature value is missing or invalid.");
+    }
+
     const database = client.db("test");
 
     const temperaturaCollection = database.collection("temperatura");
