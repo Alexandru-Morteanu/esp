@@ -25,25 +25,23 @@ app.post("/update/:temp", async (req, res) => {
   try {
     const temp = req.params.temp;
 
-    if (temp !== -1 || temp.trim() === "" || isNaN(parseFloat(temp))) {
-      throw new Error("Temperature value is missing or invalid.");
+    if (temp !== -1) {
+      const database = client.db("test");
+
+      const temperaturaCollection = database.collection("temperatura");
+
+      const filter = { _id: 1 };
+
+      const update = {
+        $set: {
+          temp: temp,
+        },
+      };
+
+      const result = await temperaturaCollection.updateOne(filter, update);
+
+      res.status(200).send("Document updated successfully.");
     }
-
-    const database = client.db("test");
-
-    const temperaturaCollection = database.collection("temperatura");
-
-    const filter = { _id: 1 };
-
-    const update = {
-      $set: {
-        temp: temp,
-      },
-    };
-
-    const result = await temperaturaCollection.updateOne(filter, update);
-
-    res.status(200).send("Document updated successfully.");
   } catch (error) {
     console.error("Error updating document:", error);
     res.status(500).send("Internal Server Error");
