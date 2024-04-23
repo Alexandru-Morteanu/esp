@@ -25,7 +25,7 @@ app.post("/update/:temp", async (req, res) => {
   try {
     const temp = req.params.temp;
 
-    if (temp === null || temp.trim() === "" || isNaN(parseFloat(temp))) {
+    if (temp !== -1 || temp.trim() === "" || isNaN(parseFloat(temp))) {
       throw new Error("Temperature value is missing or invalid.");
     }
 
