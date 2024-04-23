@@ -21,26 +21,42 @@ async function connect() {
   }
 }
 
-app.post("/update", async (req, res) => {
+app.post("/update/:temp", async (req, res) => {
   try {
-    // Get a reference to the database
+    const temp = req.params.temp;
+
     const database = client.db("test");
 
-    // Get a reference to the temperatura collection
     const temperaturaCollection = database.collection("temperatura");
+
     const filter = { _id: 1 };
 
-    // Define the update operation
     const update = {
       $set: {
-        temp: "20",
+        temp: temp,
       },
     };
+
     const result = await temperaturaCollection.updateOne(filter, update);
 
-    res.status(200).send("Document inserted successfully.");
+    res.status(200).send("Document updated successfully.");
   } catch (error) {
-    console.error("Error inserting document:", error);
+    console.error("Error updating document:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/data", async (req, res) => {
+  try {
+    const database = client.db("test");
+
+    const temperaturaCollection = database.collection("temperatura");
+
+    const documents = await temperaturaCollection.find({ _id: 1 }).toArray();
+
+    res.status(200).json(documents[0].temp);
+  } catch (error) {
+    console.error("Error retrieving documents:", error);
     res.status(500).send("Internal Server Error");
   }
 });
